@@ -1,0 +1,47 @@
+application:
+  name: "spring-boot-scala-example"
+  description: "An example Spring Boot app using Scala"
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    metrics:
+      enabled: true
+    health:
+      enabled: true
+      show-details: always
+
+logging:
+  file:
+    name: logs/spring-boot-scala-example.log
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/recipe
+    username: grego
+    password: springboot
+    jetty:
+      max-wait: 10000
+      max-active: 50
+      test-on-borrow: true
+  jdbc:
+    template:
+      max-rows: 500
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+        hibernate:
+          format_sql: true
+          dialect: org.hibernate.dialect.PostgreSQL81Dialect
+
+service:
+  default_page_size: 20
