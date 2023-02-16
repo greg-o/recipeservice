@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.{EnableAutoConfiguration, SpringBootApplication}
 import org.springframework.context.annotation.{Bean, ComponentScan, Configuration, Profile}
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
+import org.springframework.transaction.annotation.EnableTransactionManagement
 
 
 @SpringBootApplication
@@ -13,6 +14,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 @Configuration
 @EnableJpaRepositories
 @EnableAutoConfiguration
+@EnableTransactionManagement
 class RecipeApp {
 
 }

@@ -20,7 +20,7 @@ class RecipeController {
   @Autowired
   private var recipeService: IRecipeService = _
 
-  @Value("${service.default_page_size}")
+  @Value("${service.default_page_size:20}")
   private var defaultPageSize: String = _
 
   @Timed

@@ -21,6 +21,19 @@ management:
 logging:
   file:
     name: logs/spring-boot-scala-example.log
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+      springframework:
+        jdbc:
+          core:
+            JdbcTemplate: DEBUG
+            StatementCreatorUtils: TRACE
 
 spring:
   datasource:
@@ -41,7 +54,9 @@ spring:
     properties:
         hibernate:
           format_sql: true
-          dialect: org.hibernate.dialect.PostgreSQL81Dialect
+          dialect: org.hibernate.dialect.PostgreSQLDialect
 
 service:
   default_page_size: 20
+  query_read_timeout: 1000
+  query_write_timeout: 1000

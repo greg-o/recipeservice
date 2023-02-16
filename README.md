@@ -83,6 +83,12 @@ Delete recipe:
 curl -X DELETE "http://localhost:8080/recipes/delete/1"
 ```
 
+Update recipe:
+
+```bash
+curl -X POST http://localhost:8080/recipes/update -d '{"recipeId":1,"name":"chili","description":"homemade","ingredients":[{"recipeId":1,"ingredientNumber":1,"quantitySpecifier":"Cup","quantity":1.0,"ingredient":"beer"}],"instructions":[{"recipeId":1,"instructionNumber":1,"instruction":"add beer"}]}' -H "Content-Type: application/json"
+```
+
 ## Deploying To Kubernetes
 Assumptions:
 * You have `helm`command installed (Mac OS: `brew install helm`)

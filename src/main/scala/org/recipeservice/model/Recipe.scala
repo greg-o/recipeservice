@@ -1,7 +1,7 @@
 package org.recipeservice.model
 
-import javax.persistence.{CascadeType, Column, Entity, FetchType, GeneratedValue, GenerationType, Id, JoinColumn, OneToMany, Table, Version}
-
+import java.time.LocalDateTime
+import javax.persistence.{CascadeType, Column, Entity, FetchType, GeneratedValue, GenerationType, Id, JoinColumn, MapKey, OneToMany, Table, Version}
 import javax.validation.constraints.NotNull
 
 
@@ -26,9 +26,17 @@ class Recipe {
   @Column(name = "version")
   private val version = 0
 
-  @OneToMany(targetEntity = classOf[Ingredient], mappedBy = "recipeId", cascade=Array(CascadeType.ALL), orphanRemoval = true, fetch = FetchType.LAZY)
+  @Column(name = "creation_data_time", columnDefinition = "TIMESTAMP", nullable = false)
+  var creationDateTime: LocalDateTime = _
+
+  @Column(name = "last_modified_data_time", columnDefinition = "TIMESTAMP", nullable = false)
+  var lastModifiedDateTime: LocalDateTime = _
+
+  @OneToMany(targetEntity = classOf[Ingredient], cascade=Array(CascadeType.ALL), orphanRemoval = true, fetch = FetchType.LAZY)
+  @MapKey
   var ingredients: java.util.List[Ingredient] = _
 
-  @OneToMany(targetEntity = classOf[Instruction], mappedBy = "recipeId", cascade=Array(CascadeType.ALL), orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToMany(targetEntity = classOf[Instruction], cascade=Array(CascadeType.ALL), orphanRemoval = true, fetch = FetchType.LAZY)
+  @MapKey
   var instructions: java.util.List[Instruction] = _
 }

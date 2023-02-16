@@ -4,14 +4,14 @@ import javax.persistence.{CascadeType, Column, Entity, EnumType, Enumerated, Fet
 import javax.validation.constraints.NotNull
 
 @Entity
-@Table(name = "ingredients", uniqueConstraints = Array(UniqueConstraint(name = "unique_ingredient_recipe_and_order", columnNames = Array("recipe_id", "ingredient_number"))))
+@Table(name = "ingredients")
 class Ingredient {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "recipe_id")
-  var recipeId: Long = _
-
+  @Column(name = "ingredient_id")
+  var ingredientId: Long = _
+  
   @Column(name = "ingredient_number", columnDefinition="INT CONSTRAINT positive_ingredient_number CHECK (ingredient_number > 0)")
   var ingredientNumber: Int = _
 
