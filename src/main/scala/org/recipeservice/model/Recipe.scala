@@ -1,12 +1,11 @@
 package org.recipeservice.model
 
 import java.time.LocalDateTime
-import javax.persistence.{CascadeType, Column, Entity, FetchType, GeneratedValue, GenerationType, Id, JoinColumn, MapKey, OneToMany, Table, Version}
+import javax.persistence.{CascadeType, Column, Entity, FetchType, GeneratedValue, GenerationType, Id, JoinColumn, MapKey, OneToMany, Table, UniqueConstraint, Version}
 import javax.validation.constraints.NotNull
 
-
 @Entity
-@Table(name = "recipes")
+@Table(name = "recipes", uniqueConstraints = Array(UniqueConstraint(name = "unique_recipe_name_and_variant", columnNames = Array("name", "variant"))))
 class Recipe {
 
   @Id
@@ -18,6 +17,9 @@ class Recipe {
   @NotNull
   var name: String = _
 
+  @Column(name = "variant", nullable = false)
+  var variant: Int = _
+
   @Column(name = "description")
   @NotNull
   var description: String = _
@@ -26,10 +28,10 @@ class Recipe {
   @Column(name = "version")
   private val version = 0
 
-  @Column(name = "creation_data_time", columnDefinition = "TIMESTAMP", nullable = false)
+  @Column(name = "creation_date_time", columnDefinition = "TIMESTAMP", nullable = false)
   var creationDateTime: LocalDateTime = _
 
-  @Column(name = "last_modified_data_time", columnDefinition = "TIMESTAMP", nullable = false)
+  @Column(name = "last_modified_date_time", columnDefinition = "TIMESTAMP", nullable = false)
   var lastModifiedDateTime: LocalDateTime = _
 
   @OneToMany(targetEntity = classOf[Ingredient], cascade=Array(CascadeType.ALL), orphanRemoval = true, fetch = FetchType.LAZY)

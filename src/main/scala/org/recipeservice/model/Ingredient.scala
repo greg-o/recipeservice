@@ -11,7 +11,7 @@ class Ingredient {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "ingredient_id")
   var ingredientId: Long = _
-  
+
   @Column(name = "ingredient_number", columnDefinition="INT CONSTRAINT positive_ingredient_number CHECK (ingredient_number > 0)")
   var ingredientNumber: Int = _
 
