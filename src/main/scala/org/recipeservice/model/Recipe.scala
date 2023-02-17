@@ -5,7 +5,7 @@ import javax.persistence.{CascadeType, Column, Entity, FetchType, GeneratedValue
 import javax.validation.constraints.NotNull
 
 @Entity
-@Table(name = "recipes", uniqueConstraints = Array(UniqueConstraint(name = "unique_recipe_name_and_variant", columnNames = Array("name", "variant"))))
+@Table(name = "recipes", uniqueConstraints = Array(UniqueConstraint(name = "unique_recipe_name_and_variation", columnNames = Array("name", "variation"))))
 class Recipe {
 
   @Id
@@ -17,8 +17,8 @@ class Recipe {
   @NotNull
   var name: String = _
 
-  @Column(name = "variant", nullable = false)
-  var variant: Int = _
+  @Column(name = "variation", nullable = false)
+  var variation: Int = _
 
   @Column(name = "description")
   @NotNull

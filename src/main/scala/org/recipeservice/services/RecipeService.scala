@@ -47,7 +47,7 @@ class RecipeService extends IRecipeService {
     def addRecipe(recipe: Recipe): Recipe = {
         val recipes: Streamable[Recipe] = recipeRepository.findAllByName(recipe.name)
 
-        recipe.variant = recipes.stream().mapToInt(recipe => recipe.variant).max().orElse(0) + 1
+        recipe.variation = recipes.stream().mapToInt(recipe => recipe.variation).max().orElse(0) + 1
         recipe.creationDateTime = LocalDateTime.now()
         recipe.lastModifiedDateTime = recipe.creationDateTime
         IntStream
@@ -68,6 +68,7 @@ class RecipeService extends IRecipeService {
 
         if (optionalRecipe.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND)
 
+        newRecipe.creationDateTime = optionalRecipe.get().creationDateTime
         newRecipe.lastModifiedDateTime = LocalDateTime.now()
         IntStream
           .range(0, newRecipe.ingredients.size())
