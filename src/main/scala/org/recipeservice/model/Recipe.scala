@@ -1,5 +1,7 @@
 package org.recipeservice.model
 
+import org.springframework.hateoas.RepresentationModel
+
 import java.time.LocalDateTime
 import javax.persistence.{CascadeType, Column, Entity, FetchType, GeneratedValue, GenerationType, Id, JoinColumn, MapKey, OneToMany, Table, UniqueConstraint, Version}
 import javax.validation.constraints.NotNull

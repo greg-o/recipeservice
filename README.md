@@ -69,7 +69,7 @@ curl "http://localhost:8080/recipes/list?start=0&count=20"
 
 Add recipe:
 ```bash
-curl -X POST "http://localhost:8080/recipes/add" -d '{"name":"Tea","description":"cup of tea","ingredients":[{"quantitySpecifier":"Cup","quantity":1.0,"ingredient":"water"}, {"quantitySpecifier":"Teaspoon","quantity":1.0,"ingredient":"tea"}],"instructions":[{"instruction":"add tea to hot water"}]}' -H "Content-Type: application/json"
+curl -X PUT "http://localhost:8080/recipes/add" -d '{"name":"Tea","description":"cup of tea","ingredients":[{"quantitySpecifier":"Cup","quantity":1.0,"ingredient":"water"}, {"quantitySpecifier":"Teaspoon","quantity":1.0,"ingredient":"tea"}],"instructions":[{"instruction":"add tea to hot water"}]}' -H "Content-Type: application/json"
 ```
 
 Get recipe:
@@ -86,7 +86,7 @@ curl -X DELETE "http://localhost:8080/recipes/delete/1"
 Update recipe:
 
 ```bash
-curl -X POST http://localhost:8080/recipes/update -d '{"recipeId":1,"name":"chili","description":"homemade","ingredients":[{"recipeId":1,"ingredientNumber":1,"quantitySpecifier":"Cup","quantity":1.0,"ingredient":"beer"}],"instructions":[{"recipeId":1,"instructionNumber":1,"instruction":"add beer"}]}' -H "Content-Type: application/json"
+curl -X PATCH http://localhost:8080/recipes/update -d '{"recipeId":1,"name":"chili","description":"homemade","ingredients":[{"recipeId":1,"ingredientNumber":1,"quantitySpecifier":"Cup","quantity":1.0,"ingredient":"beer"}],"instructions":[{"recipeId":1,"instructionNumber":1,"instruction":"add beer"}]}' -H "Content-Type: application/json"
 ```
 
 ## Deploying To Kubernetes

@@ -5,10 +5,20 @@ import org.recipeservice.repository.RecipeRepository
 
 import java.util.Optional
 import javax.transaction.Transactional
+import org.recipeservice.controller.{RecipeController, RecipeResourceAssembler}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.{Lock, Modifying, QueryHints}
 import org.springframework.data.util.Streamable
+import org.springframework.hateoas.mediatype.Affordances
+import org.springframework.hateoas.{CollectionModel, EntityModel, Link, LinkRelation}
+import org.springframework.hateoas.server.core.DummyInvocationUtils.methodOn
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.afford
+import org.springframework.http.{HttpMethod, ResponseEntity}
+
+import java.util.stream.Collectors.toList
+//import org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.linkTo
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
@@ -16,7 +26,6 @@ import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime
 import java.util.stream.IntStream
 import javax.persistence.{LockModeType, QueryHint}
-
 
 @Service
 class RecipeService extends IRecipeService {

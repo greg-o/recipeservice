@@ -1,11 +1,13 @@
 package org.recipeservice.services
 
 import org.recipeservice.model.Recipe
+import org.springframework.hateoas.{CollectionModel, EntityModel}
+import org.springframework.http.ResponseEntity
+
 import java.util.Optional
 trait IRecipeService {
 
   def getAllRecipes(start: Int, limit: Int): java.util.List[Recipe]
-
   def recipeExistsById(id: Long): Boolean
 
   def getRecipeById(id: Long): Optional[Recipe]
