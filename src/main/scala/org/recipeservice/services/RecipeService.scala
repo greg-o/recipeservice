@@ -7,7 +7,7 @@ import java.util.Optional
 import javax.transaction.Transactional
 import org.recipeservice.controller.{RecipeController, RecipeResourceAssembler}
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.{Page, PageRequest}
 import org.springframework.data.jpa.repository.{Lock, Modifying, QueryHints}
 import org.springframework.data.util.Streamable
 import org.springframework.hateoas.mediatype.Affordances
@@ -36,13 +36,12 @@ class RecipeService extends IRecipeService {
     @Transactional
     @Lock(LockModeType.READ)
     @QueryHints(Array(QueryHint(name = "javax.persistence.lock.timeout", value = "${service.query_read_timeout:3000}")))
-    def getAllRecipes(start: Int, limit: Int): java.util.List[Recipe] = recipeRepository.findAll(PageRequest.of(start, limit)).getContent()
+    def getAllRecipes(start: Int, limit: Int): Page[Recipe] = recipeRepository.findAll(PageRequest.of(start, limit))
 
     @Transactional
     @Lock(LockModeType.READ)
     @QueryHints(Array(QueryHint(name = "javax.persistence.lock.timeout", value = "${service.query_read_timeout:3000}")))
     def recipeExistsById(id: Long): Boolean = recipeRepository.existsById(id)
-
 
     @Transactional
     @Lock(LockModeType.READ)

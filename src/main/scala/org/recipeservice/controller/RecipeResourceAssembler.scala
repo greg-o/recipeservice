@@ -16,13 +16,11 @@ class RecipeResourceAssembler extends SimpleRepresentationModelAssembler[Recipe]
 
   override def addLinks(resource: EntityModel[Recipe]): Unit = {
 
-    resource.add(linkTo(methodOn(classOf[RecipeController]).get(resource.getContent().recipeId)).withSelfRel()
-      .andAffordance(afford(methodOn(classOf[RecipeController]).deleteById(resource.getContent().recipeId)))
-      .andAffordance(afford(methodOn(classOf[RecipeController]).updateRecipe(resource.getContent())))
+    resource.add(linkTo(methodOn(classOf[RecipeController]).getRecipe(resource.getContent().recipeId, false)).withSelfRel()
+      .andAffordance(afford(methodOn(classOf[RecipeController]).deleteRecipe(resource.getContent().recipeId)))
+      .andAffordance(afford(methodOn(classOf[RecipeController]).updateRecipe(resource.getContent(), false)))
     )
   }
 
-  override def addLinks(resources: CollectionModel[EntityModel[Recipe]]): Unit = {
-    resources.add(linkTo(methodOn(classOf[RecipeController]).list(Optional.empty(), Optional.empty())).withSelfRel())
-  }
+  override def addLinks(resources: CollectionModel[EntityModel[Recipe]]): Unit = {}
 }
