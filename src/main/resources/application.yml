@@ -20,7 +20,7 @@ management:
 
 logging:
   file:
-    name: logs/spring-boot-scala-example.log
+    name: logs/spring-boot-scala-recipeservice.log
   level:
     org:
       hibernate:
@@ -34,6 +34,13 @@ logging:
           core:
             JdbcTemplate: DEBUG
             StatementCreatorUtils: TRACE
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  path: /swagger-ui.html
+  swagger-ui:
+    operationsSorter: method
 
 spring:
   datasource:

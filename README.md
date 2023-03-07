@@ -1,12 +1,12 @@
 # Spring Boot Scala Example
 
-[![Build](https://github.com/jecklgamis/spring-boot-scala-example/actions/workflows/build.yml/badge.svg)](https://github.com/jecklgamis/spring-boot-scala-example/actions/workflows/build.yml)
+[![Build](https://github.com/greg-o/spring-boot-scala-recipeservice/actions/workflows/build.yml/badge.svg)](https://github.com/greg-o/spring-boot-scala-recipeservice/actions/workflows/build.yml)
 
 This is an example Spring Boot app using Scala.
 
 Docker run:
 ```
-docker run -p 8080:8080 jecklgamis/spring-boot-scala-example:latest
+docker run -p 8080:8080 greg-o/spring-boot-scala-recipeservice:latest
 ```
 
 What's In the Box?
@@ -14,6 +14,7 @@ What's In the Box?
 * Java (18.0.2)
 * Scala (3.0.2)
 * Spring Boot (2.7.8)
+* Springdoc OpenApi (1.6.14)
 * Maven build (12.3.1)
 * Ubuntu Docker image
 * Jetty web container

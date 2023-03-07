@@ -3,3 +3,8 @@
 *.log
 *.gz
 **/target
+.DS_Store
+**/.DS_Store
+deployment/**
+logs/**
+target/**

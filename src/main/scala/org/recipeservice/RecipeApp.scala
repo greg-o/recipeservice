@@ -1,6 +1,10 @@
 package org.recipeservice
 
 import de.ingogriebsch.spring.hateoas.siren.MediaTypes
+import io.swagger.v3.oas.models.Components
+import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.info.Info
+import io.swagger.v3.oas.models.info.License
 import org.eclipse.jetty.server.{NetworkTrafficServerConnector, Server}
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.SpringApplication
@@ -18,6 +22,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 @EnableAutoConfiguration
 @EnableTransactionManagement
 class RecipeApp {
+  @Bean
+  def customOpenAPI(@Value("${springdoc.version:3.0.0}") appVersion: String): OpenAPI = new OpenAPI().components(new Components()).info(new Info().title("Recipe Service").version(appVersion).license(new License().name("Apache 2.0").url("http://springdoc.org")))
 }
 
 @main
