@@ -14,7 +14,6 @@ What's In the Box?
 * Java (18.0.2)
 * Scala (3.0.2)
 * Spring Boot (2.7.8)
-* Springdoc OpenApi (1.6.14)
 * Maven build (12.3.1)
 * Ubuntu Docker image
 * Jetty web container
@@ -89,6 +88,27 @@ Update recipe:
 ```bash
 curl -X PATCH http://localhost:8080/recipes/update -d '{"recipeId":1,"name":"chili","description":"homemade","ingredients":[{"recipeId":1,"ingredientNumber":1,"quantitySpecifier":"Cup","quantity":1.0,"ingredient":"beer"}],"instructions":[{"recipeId":1,"instructionNumber":1,"instruction":"add beer"}]}' -H "Content-Type: application/json"
 ```
+
+Swagger/Open API
+```
+http://localhost:8080/swagger-ui/index.html
+```
+
+Start detached Elasticsearch
+
+./bin/elasticsearch -d -p pid
+
+Add user:
+
+curl -X PUT -H'Content-Type: application/json' 'https://localhost:9200/us/user/2?pretty=1' -d '{"email" : "greg.osgood@gmail.com", "name" : "Greg Osgood","username" : "grego", "password" : "springboot"}'  --key certificates/elasticsearch-ca.pem  -k -u elastic:springboot
+
+Reset password:
+
+bin/elasticsearch-reset-password -u elastic -i
+
+Stop detach Elasticsearch
+
+pkill -F pid
 
 ## Deploying To Kubernetes
 Assumptions:

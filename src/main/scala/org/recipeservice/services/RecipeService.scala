@@ -1,11 +1,12 @@
 package org.recipeservice.services
 
 import org.recipeservice.model.{Ingredient, Recipe}
-import org.recipeservice.repository.RecipeRepository
+import org.recipeservice.repository.{RecipeRepository, RecipeSearchRepository}
 
 import java.util.Optional
 import javax.transaction.Transactional
 import org.recipeservice.controller.{RecipeController, RecipeResourceAssembler}
+import org.recipeservice.document.RecipeDoc
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.{Page, PageRequest}
 import org.springframework.data.jpa.repository.{Lock, Modifying, QueryHints}
@@ -17,7 +18,6 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.afford
 import org.springframework.http.{HttpMethod, ResponseEntity}
 
 import java.util.stream.Collectors.toList
-//import org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.linkTo
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -32,6 +32,9 @@ class RecipeService extends IRecipeService {
 
     @Autowired
     var recipeRepository: RecipeRepository = _
+
+    @Autowired
+    var recipeSearchRepository: RecipeSearchRepository = _
 
     @Transactional
     @Lock(LockModeType.READ)
@@ -64,7 +67,9 @@ class RecipeService extends IRecipeService {
         IntStream
           .range(0, recipe.instructions.size())
           .forEach(idx => recipe.instructions.get(idx).instructionNumber = idx + 1);
-        recipeRepository.save(recipe)
+        val savedRecipe = recipeRepository.save(recipe)
+        val recipeDoc = recipeSearchRepository.save(RecipeDoc.create(savedRecipe))
+        savedRecipe
     }
 
     @Transactional
@@ -84,7 +89,9 @@ class RecipeService extends IRecipeService {
         IntStream
           .range(0, newRecipe.instructions.size())
           .forEach(idx => newRecipe.instructions.get(idx).instructionNumber = idx + 1);
-        recipeRepository.save(newRecipe)
+        val savedRecipe = recipeRepository.save(newRecipe)
+        val recipeDoc = recipeSearchRepository.save(RecipeDoc.create(savedRecipe))
+        savedRecipe
     }
 
 

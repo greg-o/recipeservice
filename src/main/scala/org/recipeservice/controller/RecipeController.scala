@@ -130,6 +130,9 @@ class RecipeController {
   @DeleteMapping(path = Array("/delete/{id}"))
   def deleteRecipe(@PathVariable("id") id: Long): ResponseEntity[?] = {
     if (!recipeService.recipeExistsById(id)) ResponseEntity.notFound().build()
-    else ResponseEntity.ok(recipeResourceAssembler.toModel(recipeService.getRecipeById(id).get()))
+    else {
+      recipeService.deleteRecipeById(id)
+      ResponseEntity.ok("Delete recipe: id = " + id)
+    }
   }
 }

@@ -35,7 +35,7 @@ class Recipe {
   @Version
   @Column(name = "version")
   @Schema(description = "The version of the recipe", name = "version")
-  private val version = 0
+  private val version: Long = 0
 
   @Column(name = "creation_date_time", columnDefinition = "TIMESTAMP", nullable = false)
   @Schema(description = "The date and time the recipe was created", name = "creationDateTime")
