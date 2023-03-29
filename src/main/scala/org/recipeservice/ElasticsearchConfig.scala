@@ -20,8 +20,6 @@ class ElasticsearchConfig {
   private var username: String = _
   @Value("${spring.data.elasticsearch.client.password}")
   private var password: String = _
-  @Value("${spring.data.elasticsearch.cluster.name}")
-  private var clusterName: String = _
 
   @Bean
   @throws[Exception]

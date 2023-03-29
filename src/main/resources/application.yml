@@ -1,5 +1,5 @@
 application:
-  name: "spring-boot-scala-example"
+  name: "spring-boot-scala-recipe-service"
   description: "An example Spring Boot app using Scala"
 
 server:

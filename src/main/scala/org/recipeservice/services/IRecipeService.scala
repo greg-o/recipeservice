@@ -1,5 +1,7 @@
 package org.recipeservice.services
 
+import co.elastic.clients.elasticsearch.core.search.ResponseBody
+import org.recipeservice.document.RecipeDoc
 import org.recipeservice.model.Recipe
 import org.springframework.data.domain.Page
 import org.springframework.hateoas.{CollectionModel, EntityModel}
@@ -18,4 +20,6 @@ trait IRecipeService {
   def updateRecipe(recipe: Recipe): Recipe
 
   def deleteRecipeById(id: Long): Unit
+
+  def searchRecipes(searchText: String): ResponseBody[RecipeDoc]
 }

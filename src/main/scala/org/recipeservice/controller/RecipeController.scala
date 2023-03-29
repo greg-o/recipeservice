@@ -1,5 +1,8 @@
 package org.recipeservice.controller
 
+import co.elastic.clients.elasticsearch.core.search.ResponseBody
+import co.elastic.clients.json.jackson.JacksonJsonpMapper
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.sun.tools.javac.util.DefinedBy.Api
 import de.ingogriebsch.spring.hateoas.siren.MediaTypes
 
@@ -22,6 +25,9 @@ import io.swagger.v3.oas.annotations.{OpenAPIDefinition, Operation}
 import io.swagger.v3.oas.annotations.info.{Contact, Info}
 import io.swagger.v3.oas.annotations.media.{Content, Schema}
 import io.swagger.v3.oas.annotations.responses.{ApiResponse, ApiResponses}
+import org.recipeservice.document.RecipeDoc
+
+import java.io.StringWriter
 
 @RestController
 @OpenAPIDefinition(
@@ -43,6 +49,9 @@ class RecipeController {
 
   @Value("${service.default_page_size:20}")
   private var defaultPageSize: String = _
+
+  @Autowired
+  private var objectMapper: ObjectMapper = _
 
   @Timed
   @Operation(
@@ -134,5 +143,20 @@ class RecipeController {
       recipeService.deleteRecipeById(id)
       ResponseEntity.ok("Delete recipe: id = " + id)
     }
+  }
+
+  @Timed
+  @GetMapping(path = Array("/search"), produces = Array(org.springframework.http.MediaType.APPLICATION_JSON_VALUE))
+  def searchRecipes(@RequestParam(value = "search-string", required = true) searchString: String): ResponseEntity[?] = {
+    val results = recipeService.searchRecipes(searchString)
+    val writer = new StringWriter
+    val jacksonJsonpMapper = new JacksonJsonpMapper(objectMapper)
+
+    try {
+      val generator = jacksonJsonpMapper.jsonProvider.createGenerator(writer)
+      try results.serialize(generator, jacksonJsonpMapper)
+      finally if (generator != null) generator.close()
+    }
+    ResponseEntity.ok().contentType(org.springframework.http.MediaType.APPLICATION_JSON).body(writer.toString)
   }
 }

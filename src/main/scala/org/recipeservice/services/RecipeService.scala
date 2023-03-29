@@ -1,5 +1,9 @@
 package org.recipeservice.services
 
+import co.elastic.clients.elasticsearch._types.query_dsl.{MatchQuery, Query, QueryStringQuery}
+import co.elastic.clients.elasticsearch.core.SearchRequest
+import co.elastic.clients.elasticsearch.core.search.ResponseBody
+import co.elastic.clients.elasticsearch.ElasticsearchClient
 import org.recipeservice.model.{Ingredient, Recipe}
 import org.recipeservice.repository.{RecipeRepository, RecipeSearchRepository}
 
@@ -35,6 +39,9 @@ class RecipeService extends IRecipeService {
 
     @Autowired
     var recipeSearchRepository: RecipeSearchRepository = _
+
+    @Autowired
+    var elasticsearchClient: ElasticsearchClient = _
 
     @Transactional
     @Lock(LockModeType.READ)
@@ -100,4 +107,11 @@ class RecipeService extends IRecipeService {
     @Lock(LockModeType.WRITE)
     @QueryHints(Array(QueryHint(name = "javax.persistence.lock.timeout", value = "${service.query_write_timeout:3000}")))
     def deleteRecipeById(id: Long): Unit = recipeRepository.deleteById(id)
+
+  def searchRecipes(searchText: String): ResponseBody[RecipeDoc] = {
+    val queryString = new QueryStringQuery.Builder().query(searchText).build
+    val query = new Query.Builder().queryString(queryString).build
+    val searchRequest = new SearchRequest.Builder().index("recipes").query(query).build
+    elasticsearchClient.search(searchRequest, classOf[RecipeDoc])
+  }
 }
