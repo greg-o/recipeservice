@@ -1,5 +1,5 @@
 application:
-  name: "spring-boot-scala-example"
+  name: "spring-boot-scala-recipe-service"
   description: "An example Spring Boot app using Scala"
 
 server:
@@ -20,7 +20,7 @@ management:
 
 logging:
   file:
-    name: logs/spring-boot-scala-example.log
+    name: logs/spring-boot-scala-recipeservice-test.log
 
 spring:
   datasource:
