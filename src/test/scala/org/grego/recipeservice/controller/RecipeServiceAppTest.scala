@@ -9,9 +9,13 @@ import org.apache.http.client.utils.URIBuilder
 import org.grego.recipeservice.model.{Ingredient, Instruction, QuantitySpecifier, Recipe}
 import org.json.JSONObject
 import org.junit.jupiter.api.Assertions.{assertEquals, assertNotNull, assertTrue}
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.{Tag, Test, TestInstance}
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.{MediaType, RequestEntity, ResponseEntity}
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.junit.jupiter.SpringExtension
 
 import java.io.ByteArrayOutputStream
 import java.net.URL
@@ -21,11 +25,9 @@ import java.util.HashMap
 import java.util.LinkedHashMap
 
 @SuppressWarnings(value = Array("scalastyle:magicnumber"))
-@ExtendWith(classOf[SpringExtension])
-
-@SpringBootTest(properties = "spring.main.web-application-type=reactive",
-  webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@ExtendWith(Array(classOf[SpringExtension]))
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles(Array("test"))
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("IntegrationTests")
 class RecipeServiceAppTest extends BaseAppTest {
