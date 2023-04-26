@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.0">
+ <file name="/Users/gregoryosgood/Documents/Projects/Scala Spring/spring-boot-scala-recipe-service/src/test/scala/org/grego/recipeservice/controller/RecipeControllerTest.scala">
+  <error column="17" line="55" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="77" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="91" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="112" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="127" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="148" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="161" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="176" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="184" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="203" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="215" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="237" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="261" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="280" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="287" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="308" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="327" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="337" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="360" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="381" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="391" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="4" line="395" source="org.scalastyle.scalariform.IfBraceChecker" severity="warning" message="If block needs braces"/>
+  <error column="6" line="100" source="org.scalastyle.scalariform.MethodLengthChecker" severity="warning" message="Method is longer than 50 lines"/>
+  <error column="6" line="194" source="org.scalastyle.scalariform.MethodLengthChecker" severity="warning" message="Method is longer than 50 lines"/>
+  <error column="6" line="297" source="org.scalastyle.scalariform.MethodLengthChecker" severity="warning" message="Method is longer than 50 lines"/>
+  <error column="6" line="48" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.links[*].href&quot; appears 4 times in the file."/>
+  <error column="48" line="59" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.recipeId&quot; appears 7 times in the file."/>
+  <error column="44" line="69" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal /recipes/add&quot; appears 6 times in the file."/>
+  <error column="92" line="88" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot; appears 6 times in the file."/>
+  <error column="44" line="102" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;true&quot; appears 4 times in the file."/>
+  <error column="52" line="115" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.properties&quot; appears 3 times in the file."/>
+  <error column="51" line="133" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.actions[?(@.method == 'PATCH')].href&quot; appears 3 times in the file."/>
+  <error column="38" line="135" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;Another test&quot; appears 4 times in the file."/>
+  <error column="54" line="135" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;Another test recipe&quot; appears 4 times in the file."/>
+  <error column="43" line="136" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;something else&quot; appears 4 times in the file."/>
+  <error column="44" line="137" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;Do something else&quot; appears 4 times in the file."/>
+  <error column="35" line="140" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.ingredients[0].ingredientId&quot; appears 5 times in the file."/>
+  <error column="35" line="142" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.instructions[0].instructionId&quot; appears 5 times in the file."/>
+  <error column="8" line="419" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
+  <error column="8" line="431" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
+ </file>
+</checkstyle>
