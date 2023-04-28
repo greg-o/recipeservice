@@ -8,9 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 import lombok.ToString;
-import org.grego.recipeservice.model.Ingredient;
 import org.grego.recipeservice.model.QuantitySpecifier;
 
 /**
@@ -20,9 +18,24 @@ import org.grego.recipeservice.model.QuantitySpecifier;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @ToString
 public class IngredientDoc extends ElasticsearchDoc {
+    /**
+     * All Arguments constructor.
+     * @param ingredientId
+     * @param ingredientNumber
+     * @param quantitySpecifier
+     * @param quantity
+     * @param ingredient
+     */
+    public IngredientDoc(final Long ingredientId, final int ingredientNumber,
+                         final QuantitySpecifier quantitySpecifier, final Double quantity, final String ingredient) {
+        this.ingredientId = ingredientId;
+        this.ingredientNumber = ingredientNumber;
+        this.quantitySpecifier = quantitySpecifier;
+        this.quantity = quantity;
+        this.ingredient = ingredient;
+    }
 
     /**
      * Identifier for the ingredient.
@@ -48,18 +61,4 @@ public class IngredientDoc extends ElasticsearchDoc {
      * The ingredient.
      */
     private String ingredient;
-
-    /**
-     * Create IngredientDoc from Ingredient.
-     * @param ingredient
-     * @return IngredientDoc
-     */
-    public static IngredientDoc create(final Ingredient ingredient) {
-        return IngredientDoc.builder()
-                .ingredientId(ingredient.ingredientId())
-                .ingredientNumber(ingredient.ingredientNumber())
-                .quantity(ingredient.quantity())
-                .ingredient(ingredient.ingredient())
-                .build();
-    }
 }

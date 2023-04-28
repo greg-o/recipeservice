@@ -8,9 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 import lombok.ToString;
-import org.grego.recipeservice.model.Instruction;
 
 /**
  * InstructionDoc contains the instruction information of a recipe for Elasticsearch.
@@ -19,9 +17,19 @@ import org.grego.recipeservice.model.Instruction;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @ToString
 public class InstructionDoc extends ElasticsearchDoc {
+    /**
+     * All arguments constructor.
+     * @param instructionId
+     * @param instructionNumber
+     * @param instruction
+     */
+    public InstructionDoc(final Long instructionId, final int instructionNumber, final String instruction) {
+        this.instructionId = instructionId;
+        this.instructionNumber = instructionNumber;
+        this.instruction = instruction;
+    }
 
     /**
      * Identifier for the instruction.
@@ -37,17 +45,4 @@ public class InstructionDoc extends ElasticsearchDoc {
      * The instruction.
      */
     private String instruction;
-
-    /**
-     * Create InstructionDoc from Instruction.
-     * @param instruction
-     * @return InstructionDoc
-     */
-    public static InstructionDoc create(final Instruction instruction) {
-        return InstructionDoc.builder()
-                .instructionId(instruction.instructionId())
-                .instructionNumber(instruction.instructionNumber())
-                .instruction(instruction.instruction())
-                .build();
-    }
 }

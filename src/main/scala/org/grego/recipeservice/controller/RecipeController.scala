@@ -272,11 +272,9 @@ class RecipeController {
     val writer = new StringWriter
     val jacksonJsonpMapper = new JacksonJsonpMapper(objectMapper)
 
-    try {
-      val generator = jacksonJsonpMapper.jsonProvider.createGenerator(writer)
-      try results.serialize(generator, jacksonJsonpMapper)
-      finally if (generator != null) generator.close
-    }
+    val generator = jacksonJsonpMapper.jsonProvider.createGenerator(writer)
+    try results.serialize(generator, jacksonJsonpMapper)
+    finally if (generator != null) generator.close
     ResponseEntity
       .ok
       .contentType(org.springframework.http.MediaType.APPLICATION_JSON)

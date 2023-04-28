@@ -15,8 +15,9 @@
     </parent>
 
     <properties>
-        <start-class>org.grego.recipeservice.RecipeServiceApp</start-class>
         <scala.version>3.0.2</scala.version>
+        <maven.compiler.source>18</maven.compiler.source>
+        <maven.compiler.target>18</maven.compiler.target>
         <!-- Versions of included libraries -->
         <checkstyle.config.location>${project.basedir}/checkstyle_config.xml</checkstyle.config.location>
         <bean-matchers.version>0.14</bean-matchers.version>
@@ -39,8 +40,6 @@
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
         <junit-platform-suite-engine.version>1.8.1</junit-platform-suite-engine.version>
         <lombok.version>1.18.26</lombok.version>
-        <maven.compiler.source>18</maven.compiler.source>
-        <maven.compiler.target>18</maven.compiler.target>
         <maven-checkstyle-plugin.version>3.2.1</maven-checkstyle-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
@@ -126,13 +125,6 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>${servlet-api.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>${validation-api.version}</version>
@@ -149,7 +141,6 @@
             <artifactId>commons-collections4</artifactId>
             <version>${commons-collections4.version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -259,7 +250,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernate-validator.version}</version>
         </dependency>
@@ -397,6 +388,27 @@
             <version>${bean-matchers.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -425,8 +437,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>18</source>
-                    <target>18</target>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -447,6 +459,12 @@
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
                 <version>${scala-maven-plugin.version}</version>
+                <configuration>
+                    <recompileMode>incremental</recompileMode>
+                    <args>
+                        <arg>-deprecation</arg>
+                    </args>
+                </configuration>
                 <executions>
                     <execution>
                         <id>scala-compile-first</id>
@@ -460,15 +478,11 @@
                         <id>scala-test-compile</id>
                         <phase>process-test-resources</phase>
                         <goals>
+                            <goal>add-source</goal>
                             <goal>testCompile</goal>
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <apiDocsUrl>http://localhost:8080/v3/api-docs</apiDocsUrl>
-                    <outputFileName>openapi.json</outputFileName>
-                    <outputDir>${project.build.directory}</outputDir>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.springdoc</groupId>

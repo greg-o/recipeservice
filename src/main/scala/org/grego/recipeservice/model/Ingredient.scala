@@ -6,6 +6,7 @@ package org.grego.recipeservice.model
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
 import io.swagger.v3.oas.annotations.media.Schema
+import org.grego.recipeservice.document.IngredientDoc
 
 import javax.persistence.*
 import javax.validation.constraints.NotNull
@@ -54,6 +55,10 @@ class Ingredient {
   @NotNull
   @Schema(description = "The ingredient", name = "ingredient")
   var ingredient: String = _
+
+  def asIngredientDoc: IngredientDoc = {
+    new IngredientDoc(ingredientId, ingredientNumber, quantitySpecifier, quantity, ingredient)
+  }
 }
 
 object Ingredient {

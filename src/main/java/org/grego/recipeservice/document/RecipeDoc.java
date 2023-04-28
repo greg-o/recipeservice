@@ -8,15 +8,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 import lombok.ToString;
-import org.grego.recipeservice.model.Recipe;
 
-import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -30,10 +26,34 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @ToString
 @Document(indexName = "recipes")
 public class RecipeDoc extends ElasticsearchDoc {
+
+    /**
+     * All arguments constructor.
+     * @param id
+     * @param name
+     * @param variation
+     * @param description
+     * @param creationDateTime
+     * @param lastModifiedDateTime
+     * @param ingredients
+     * @param instructions
+     */
+    public RecipeDoc(final Long id, final String name, final int variation, final String description,
+                     final Date creationDateTime, final Date lastModifiedDateTime,
+                     final List<IngredientDoc> ingredients, final List<InstructionDoc> instructions) {
+        this.id = id;
+        this.name = name;
+        this.variation = variation;
+        this.description = description;
+        this.creationDateTime = creationDateTime;
+        this.lastModifiedDateTime = lastModifiedDateTime;
+        this.ingredients = ingredients;
+        this.instructions = instructions;
+    }
+
     /**
      * Identifier for the recipe.
      */
@@ -69,29 +89,13 @@ public class RecipeDoc extends ElasticsearchDoc {
      * The ingredients of the recipe.
      */
     @Field(type = FieldType.Nested, includeInParent = true)
+    @Builder.Default
     private List<IngredientDoc> ingredients = Collections.emptyList();
 
     /**
      * The instructions for the recipe.
      */
     @Field(type = FieldType.Nested, includeInParent = true)
+    @Builder.Default
     private List<InstructionDoc> instructions = Collections.emptyList();
-
-    /**
-     * Create RecipeDoc from Recipe.
-     * @param recipe
-     * @return RecipeDoc
-     */
-    public static RecipeDoc create(final Recipe recipe) {
-        return RecipeDoc.builder()
-                .id(recipe.recipeId())
-                .name(recipe.name())
-                .variation(recipe.variation())
-                .description(recipe.description())
-                .creationDateTime(Date.from(recipe.creationDateTime().toInstant(ZoneOffset.UTC)))
-                .lastModifiedDateTime(Date.from(recipe.lastModifiedDateTime().toInstant(ZoneOffset.UTC)))
-                .ingredients(recipe.ingredients().stream().map(IngredientDoc::create).collect(Collectors.toList()))
-                .instructions(recipe.instructions().stream().map(InstructionDoc::create).collect(Collectors.toList()))
-                .build();
-    }
 }

@@ -1,33 +1,41 @@
-package org.grego.recipeservice.controller
+package org.grego.recipeservice
 
 import com.fasterxml.jackson.core.`type`.TypeReference
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.jayway.jsonpath.{Configuration, JsonPath}
 import net.minidev.json.JSONArray
+import org.apache.commons.lang3.{RandomStringUtils, SystemUtils}
+import org.apache.commons.text.StringSubstitutor
 import org.apache.http.client.utils
 import org.apache.http.client.utils.URIBuilder
+import org.grego.recipeservice.controller.{BaseAppTest, RecipeController}
 import org.grego.recipeservice.model.{Ingredient, Instruction, QuantitySpecifier, Recipe}
 import org.json.JSONObject
 import org.junit.jupiter.api.Assertions.{assertEquals, assertNotNull, assertTrue}
-import org.junit.jupiter.api.{Tag, Test, TestInstance}
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.{Tag, Test, TestInstance}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.{MediaType, RequestEntity, ResponseEntity}
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.testcontainers.elasticsearch.ElasticsearchContainer
+import org.testcontainers.shaded.org.apache.commons.io.IOUtils
+import org.testcontainers.utility.DockerImageName
 
-import java.io.ByteArrayOutputStream
-import java.net.URL
+import java.io.{BufferedInputStream, ByteArrayInputStream, ByteArrayOutputStream, File, FileOutputStream, IOException, InputStream}
+import java.net.{URI, URISyntaxException, URL}
+import java.nio.file.{Files, Paths}
+import java.security.cert.{Certificate, CertificateException, CertificateFactory}
 import java.util
-import java.util.Collections
-import java.util.HashMap
-import java.util.LinkedHashMap
+import java.util.{Collections, HashMap, LinkedHashMap, Optional}
+import javafx.util.Pair
+import java.security.{KeyStore, KeyStoreException, NoSuchAlgorithmException}
+
+import scala.collection.mutable.ListBuffer
 
 @SuppressWarnings(value = Array("scalastyle:magicnumber"))
 @ExtendWith(Array(classOf[SpringExtension]))
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(Array("test"))
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("IntegrationTests")
 class RecipeServiceAppTest extends BaseAppTest {
@@ -35,10 +43,71 @@ class RecipeServiceAppTest extends BaseAppTest {
   var recipeController: RecipeController = _
 
   private val jsonPath = Configuration.defaultConfiguration.jsonProvider
+
   private final val recipe = Recipe.create("Test", "Test recipe",
     util.Arrays.asList(Ingredient.create("something", QuantitySpecifier.Unspecified, 0.0)),
     util.Arrays.asList(Instruction.create("Do something")))
+
   private final val includeHyperLinksParam = "include-hyper-links"
+
+
+  /**
+   * The configuration .yml file.
+   */
+  private val CONFIGURATION_YML_FILE = "application-test.yml"
+
+  /**
+   * The password for the keystore.
+   */
+  private val KEYSTORE_PASSWORD = RandomStringUtils.random(10, true, true)
+
+  /**
+   * Elasticsearch port.
+   */
+  private val ELASTICSEARCH_PORT = 9200
+
+  /**
+   * The version of Elasticsearch.
+   */
+  private val ELASTICSEARCH_VERSION = "8.6.2"
+
+  private val ELASTICSEARCH_ARCH = if (SystemUtils.OS_ARCH == "aarch64") "arm64" else "amd64"
+
+  /**
+   * The docker image for Elasticsearch.
+   */
+  private val ELASTICSEARCH_IMAGE =
+    s"docker.elastic.co/elasticsearch/elasticsearch:$ELASTICSEARCH_VERSION-$ELASTICSEARCH_ARCH"
+
+  /**
+   * Elasticsearch password.
+   */
+  private val ELASTICSEARCH_PASSWORD = RandomStringUtils.random(10, true, true)
+
+//  /**
+//   * Container to run test instance of Elasticsearch.
+//   */
+//  private var elasticsearchContainer: ElasticsearchContainer = {
+//    val elasticsearchContainer = new ElasticsearchContainer(new DockerImageName(ELASTICSEARCH_IMAGE))
+//      .withEnv("cluster.name", "integration-test-cluster")
+//      .withPassword(ELASTICSEARCH_PASSWORD)
+//
+//    elasticsearchContainer.start()
+//    val configurationMapping =
+//      util.Map.of(
+//        "elasticsearch.port", elasticsearchContainer.getMappedPort(ELASTICSEARCH_PORT),
+//        "elasticsearch.password", ELASTICSEARCH_PASSWORD
+//      )
+//
+//    writeConfigurationYmlFile(configurationMapping)
+//
+//    val certificates = new ListBuffer[Pair[String, Certificate]]
+//
+//    addElasticsearchCertificate(certificates, elasticsearchContainer)
+//    createKeyStore(certificates.toList)
+//
+//    elasticsearchContainer
+//  }
 
   @Test
   def testListRecipes(): Unit = {
@@ -441,5 +510,66 @@ class RecipeServiceAppTest extends BaseAppTest {
       assertEquals(expectedRecipe.instructions.get(i).instruction,
         JsonPath.read(getInstructionsJson, "$[%d].instruction".format(i)).asInstanceOf[String])
     }
+  }
+
+  @throws[URISyntaxException]
+  private def getResourcePath = {
+    var classResourceUri = this.getClass.getResource("").toURI
+    for (i <- 0 until this.getClass.toString.split("\\.").length - 1) {
+      classResourceUri = Paths.get(classResourceUri).getParent.toUri
+    }
+    classResourceUri.getPath
+  }
+
+  @throws[IOException]
+  @throws[URISyntaxException]
+  private def writeConfigurationYmlFile(configurationMapping: util.Map[String, _]): Unit = {
+    val resource = getClass.getResource("/application-test.yml.ftl")
+//    val file = scala.io.Source.fromFile("src/main/resources/application-test.yml.ftl")
+    val source = scala.io.Source.fromFile(resource.getPath)
+    val templateString = try source.mkString finally source.close()
+    val substitutor = new StringSubstitutor(configurationMapping)
+    val resolvedString = substitutor.replace(templateString)
+    Files.write(Paths.get(getResourcePath, CONFIGURATION_YML_FILE), resolvedString.getBytes)
+  }
+
+  @throws[CertificateException]
+  @throws[IOException]
+  private def addElasticsearchCertificate(certificates: ListBuffer[Pair[String, Certificate]], container: ElasticsearchContainer): Unit = {
+    val caCerts: Optional[Array[Byte]] = container.caCertAsBytes
+    if (caCerts.isPresent) {
+      val fis: InputStream = new ByteArrayInputStream(caCerts.get)
+      val bis: BufferedInputStream = new BufferedInputStream(fis)
+      val cf: CertificateFactory = CertificateFactory.getInstance("X.509")
+      while (bis.available > 0) {
+        val cert: Certificate = cf.generateCertificate(bis)
+        val alias: String = "Elasticsearch" + bis.available
+        certificates +=new Pair(alias, cert)
+      }
+    }
+  }
+
+  @throws[KeyStoreException]
+  @throws[IOException]
+  @throws[NoSuchAlgorithmException]
+  @throws[CertificateException]
+  @throws[URISyntaxException]
+  private def createKeyStore(certificates: List[Pair[String, Certificate]]): Unit = {
+    val keyStore: KeyStore = KeyStore.getInstance(KeyStore.getDefaultType)
+    keyStore.load(null) //Make an empty store
+
+    val keyStoreFile: File = Paths.get(getResourcePath.toString, "keystore.jks").toFile
+    for (certificate <- certificates) {
+      keyStore.setCertificateEntry(certificate.getKey, certificate.getValue)
+    }
+
+    val stream: FileOutputStream = new FileOutputStream(keyStoreFile)
+    try keyStore.store(stream, KEYSTORE_PASSWORD.toCharArray)
+    finally {
+      if (stream != null) stream.close()
+    }
+
+    System.setProperty("javax.net.ssl.trustStore", keyStoreFile.getAbsolutePath)
+    System.setProperty("javax.net.ssl.trustStorePassword", KEYSTORE_PASSWORD)
   }
 }

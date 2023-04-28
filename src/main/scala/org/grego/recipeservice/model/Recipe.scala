@@ -5,11 +5,13 @@
 package org.grego.recipeservice.model
 
 import io.swagger.v3.oas.annotations.media.Schema
+import org.grego.recipeservice.document.RecipeDoc
 import org.springframework.hateoas.RepresentationModel
 
-import java.time.LocalDateTime
-import javax.persistence.{CascadeType, Column, Entity, FetchType, GeneratedValue, GenerationType, Id, JoinColumn,
-  MapKey, OneToMany, Table, UniqueConstraint, Version}
+import java.time.{LocalDateTime, ZoneOffset}
+import java.util.Date
+import java.util.stream.Collectors
+import javax.persistence.{CascadeType, Column, Entity, FetchType, GeneratedValue, GenerationType, Id, JoinColumn, MapKey, OneToMany, Table, UniqueConstraint, Version}
 import javax.validation.constraints.NotNull
 
 @Entity
@@ -68,6 +70,14 @@ class Recipe {
   @MapKey
   @Schema(description = "The instructions for the recipe", name = "instructions")
   var instructions: java.util.List[Instruction] = _
+
+  def asRecipeDoc: RecipeDoc = {
+    new RecipeDoc(recipeId, name, variation, description,
+      Date.from(creationDateTime.toInstant(ZoneOffset.UTC)),
+      Date.from(lastModifiedDateTime.toInstant(ZoneOffset.UTC)),
+      ingredients.stream.map(ingredient => ingredient.asIngredientDoc).collect(Collectors.toList),
+      instructions.stream.map(instruction => instruction.asInstructionDoc).collect(Collectors.toList))
+  }
 }
 
 object Recipe {

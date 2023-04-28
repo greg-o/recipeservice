@@ -101,7 +101,7 @@ class RecipeService extends IRecipeService {
       .range(0, recipe.instructions.size)
       .forEach(idx => recipe.instructions.get(idx).instructionNumber = idx + 1)
     val savedRecipe = recipeRepository.save(recipe)
-    recipeSearchRepository.save(RecipeDoc.create(savedRecipe))
+    recipeSearchRepository.save(savedRecipe.asRecipeDoc)
     savedRecipe
   }
 
@@ -136,7 +136,7 @@ class RecipeService extends IRecipeService {
         newRecipe.instructions.get(idx).instructionNumber = idx + 1
       )
     val savedRecipe = recipeRepository.save(newRecipe)
-    recipeSearchRepository.save(RecipeDoc.create(savedRecipe))
+    recipeSearchRepository.save(savedRecipe.asRecipeDoc)
     savedRecipe
   }
 

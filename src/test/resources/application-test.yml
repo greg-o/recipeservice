@@ -19,9 +19,9 @@ management:
       show-details: always
 
 spring:
-  r2dbc:
+  datasource:
     driverClassName: "org.h2.Driver"
-    url: "r2dbc:h2:mem:///testdb"
+    url: "jdbc:h2:mem:scratchdb"
     jetty:
       max-wait: 10000
       max-active: 50

@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 @EnableJpaRepositories
 @EnableAutoConfiguration
 @EnableTransactionManagement
-class RecipeApp {
+class RecipeServiceApp {
   @Bean
   def customOpenAPI(@Value("${springdoc.version:3.0.0}") appVersion: String): OpenAPI = {
     new OpenAPI()
@@ -35,10 +35,10 @@ class RecipeApp {
   }
 }
 
-object RecipeApp {
+object RecipeServiceApp {
   @main
   def main(): Unit = {
-    SpringApplication.run(classOf[RecipeApp])
+    SpringApplication.run(classOf[RecipeServiceApp])
   }
 }
 

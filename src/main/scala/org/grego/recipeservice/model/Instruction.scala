@@ -5,6 +5,7 @@
 package org.grego.recipeservice.model
 
 import io.swagger.v3.oas.annotations.media.Schema
+import org.grego.recipeservice.document.InstructionDoc
 
 import javax.persistence.*
 import javax.validation.constraints.NotNull
@@ -39,6 +40,10 @@ class Instruction {
   @NotNull
   @Schema(description = "The instruction", name = "instruction")
   var instruction: String = _
+
+  def asInstructionDoc: InstructionDoc = {
+    new InstructionDoc(instructionId, instructionNumber, instruction)
+  }
 }
 
 object Instruction {

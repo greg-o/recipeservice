@@ -14,7 +14,7 @@ import org.springframework.test.context.{ActiveProfiles, TestPropertySource}
 import java.util.{Collections, UUID}
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(Array("dev"))
+@ActiveProfiles(Array("test"))
 @TestPropertySource(
   properties =
     Array("spring.config.additional-location=classpath:application-test.yml")
