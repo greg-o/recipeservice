@@ -111,158 +111,187 @@ class RecipeServiceAppTest extends BaseAppTest {
 
   @Test
   def testListRecipes(): Unit = {
-    val listRecipes = s"http://localhost:$port/recipes/list?$includeHyperLinksParam=true"
+    var recipeId: Integer = null
 
-    verifyListRecipesSize(0)
+    try {
+      val listRecipes = s"http://localhost:$port/recipes/list?$includeHyperLinksParam=true"
 
-    val listRecipesWithHyperLinksResponse =
-      restTemplate.exchange(RequestEntity.get(listRecipes).build, classOf[String])
-    val recipeListJson = jsonPath.parse(listRecipesWithHyperLinksResponse.getBody)
-    val addRecipeUrl =
-      JsonPath.read(recipeListJson, "$.actions[?(@.method == 'PUT')].href")
-        .asInstanceOf[JSONArray].get(0).asInstanceOf[String]
+      verifyListRecipesSize(0)
 
-    verifyUrlsMatch(listRecipes, JsonPath.read(recipeListJson,
-      "$.links[*].href").asInstanceOf[JSONArray].get(0).asInstanceOf[String])
-    assertTrue(addRecipeUrl.contains(includeHyperLinksParam + "=false"))
+      val listRecipesWithHyperLinksResponse =
+        restTemplate.exchange(RequestEntity.get(listRecipes).build, classOf[String])
+      val recipeListJson = jsonPath.parse(listRecipesWithHyperLinksResponse.getBody)
+      val addRecipeUrl =
+        JsonPath.read(recipeListJson, "$.actions[?(@.method == 'PUT')].href")
+          .asInstanceOf[JSONArray].get(0).asInstanceOf[String]
 
-    val addRecipeResponse =
-      restTemplate.exchange(RequestEntity.put(addRecipeUrl).accept(MediaType.APPLICATION_JSON).body(recipe),
-        classOf[String])
+      verifyUrlsMatch(listRecipes, JsonPath.read(recipeListJson,
+        "$.links[*].href").asInstanceOf[JSONArray].get(0).asInstanceOf[String])
+      assertTrue(addRecipeUrl.contains(includeHyperLinksParam + "=false"))
 
-    assertEquals(200, addRecipeResponse.getStatusCodeValue)
-    verifyListRecipesSize(1)
+      val addRecipeResponse =
+        restTemplate.exchange(RequestEntity.put(addRecipeUrl).accept(MediaType.APPLICATION_JSON).body(recipe),
+          classOf[String])
 
-    val addRecipeJson = jsonPath.parse(addRecipeResponse.getBody)
-    val recipeId = JsonPath.read(addRecipeJson, "$.recipeId").asInstanceOf[Integer]
-    assertNotNull(recipeId)
+      assertEquals(200, addRecipeResponse.getStatusCodeValue)
+      verifyListRecipesSize(1)
 
-    recipeController.deleteRecipe(recipeId.longValue)
+      val addRecipeJson = jsonPath.parse(addRecipeResponse.getBody)
+      recipeId = JsonPath.read(addRecipeJson, "$.recipeId").asInstanceOf[Integer]
+      assertNotNull(recipeId)
+    } finally {
+      if (recipeId != null) {
+        val deleteRecipeResponse = recipeController.deleteRecipe(recipeId.longValue)
 
+        assertEquals(200, deleteRecipeResponse.getStatusCodeValue)
+      }
+    }
     verifyListRecipesSize(0)
   }
 
   @Test
   def testAddRecipeWithoutHyperlinks(): Unit = {
-    val addRecipe = s"http://localhost:$port/recipes/add"
+    var recipeId: Integer = null
 
-    verifyListRecipesSize(0)
+    try {
+      val addRecipe = s"http://localhost:$port/recipes/add"
 
-    val addRecipeResponse =
-      restTemplate.exchange(RequestEntity.put(addRecipe).accept(MediaType.APPLICATION_JSON).body(recipe),
-        classOf[String])
+      verifyListRecipesSize(0)
 
-    assertEquals(200, addRecipeResponse.getStatusCodeValue)
+      val addRecipeResponse =
+        restTemplate.exchange(RequestEntity.put(addRecipe).accept(MediaType.APPLICATION_JSON).body(recipe),
+          classOf[String])
 
-    val addRecipeJson = jsonPath.parse(addRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
+      assertEquals(200, addRecipeResponse.getStatusCodeValue)
 
-    verifyRecipe(recipe, addRecipeJson)
+      val addRecipeJson = jsonPath.parse(addRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
 
-    val recipeId = JsonPath.read(addRecipeJson, "$.recipeId").asInstanceOf[Integer]
+      verifyRecipe(recipe, addRecipeJson)
 
-    assertNotNull(recipeId)
+      recipeId = JsonPath.read(addRecipeJson, "$.recipeId").asInstanceOf[Integer]
 
-    val getRecipeResponse =
-      restTemplate.exchange(RequestEntity.get(s"http://localhost:$port/recipes/get/$recipeId").build,
-        classOf[String])
+      assertNotNull(recipeId)
 
-    assertEquals(200, getRecipeResponse.getStatusCodeValue)
-    verifyRecipe(recipe, jsonPath.parse(getRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]])
+      val getRecipeResponse =
+        restTemplate.exchange(RequestEntity.get(s"http://localhost:$port/recipes/get/$recipeId").build,
+          classOf[String])
 
-    val response = recipeController.deleteRecipe(recipeId.longValue())
+      assertEquals(200, getRecipeResponse.getStatusCodeValue)
+      verifyRecipe(recipe, jsonPath.parse(getRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]])
+    } finally {
+      if (recipeId != null) {
+        val deleteRecipeResponse = recipeController.deleteRecipe(recipeId.longValue())
+
+        assertEquals(200, deleteRecipeResponse.getStatusCodeValue)
+      }
+    }
 
     verifyListRecipesSize(0)
   }
 
   @Test
   def testAddRecipeWithHyperlinks(): Unit = {
-    val addRecipe = new URIBuilder(s"http://localhost:$port/recipes/add")
-      .addParameter(includeHyperLinksParam, "true").build.toString
+    var deleteRecipe: String = null
 
-    verifyListRecipesSize(0)
+    try {
+      val addRecipe = new URIBuilder(s"http://localhost:$port/recipes/add")
+        .addParameter(includeHyperLinksParam, "true").build.toString
 
-    val addRecipeResponse =
-      restTemplate.exchange(RequestEntity
-        .put(addRecipe)
-        .accept(MediaType.APPLICATION_JSON)
-        .body(recipe), classOf[String])
+      verifyListRecipesSize(0)
 
-    assertEquals(200, addRecipeResponse.getStatusCodeValue)
+      val addRecipeResponse =
+        restTemplate.exchange(RequestEntity
+          .put(addRecipe)
+          .accept(MediaType.APPLICATION_JSON)
+          .body(recipe), classOf[String])
 
-    val responseJson = jsonPath.parse(addRecipeResponse.getBody)
-    val addRecipeJson = JsonPath.read(responseJson, "$.properties")
-      .asInstanceOf[util.LinkedHashMap[String, Object]]
+      assertEquals(200, addRecipeResponse.getStatusCodeValue)
 
-    verifyRecipe(recipe, addRecipeJson)
+      val responseJson = jsonPath.parse(addRecipeResponse.getBody)
+      val addRecipeJson = JsonPath.read(responseJson, "$.properties")
+        .asInstanceOf[util.LinkedHashMap[String, Object]]
 
-    val recipeId = JsonPath.read(addRecipeJson, "$.recipeId").asInstanceOf[Integer]
+      verifyRecipe(recipe, addRecipeJson)
 
-    assertNotNull(recipeId)
+      val recipeId = JsonPath.read(addRecipeJson, "$.recipeId").asInstanceOf[Integer]
 
-    val getRecipe = s"http://localhost:$port/recipes/get/$recipeId"
-    val getRecipeResponse = restTemplate.exchange(RequestEntity.get(getRecipe).build, classOf[String])
+      assertNotNull(recipeId)
 
-    assertEquals(200, getRecipeResponse.getStatusCodeValue)
-    verifyRecipe(recipe, jsonPath.parse(getRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]])
+      val getRecipe = s"http://localhost:$port/recipes/get/$recipeId"
+      val getRecipeResponse = restTemplate.exchange(RequestEntity.get(getRecipe).build, classOf[String])
 
-    verifyUrlsMatch(getRecipe,
-      JsonPath.read(responseJson, "$.links[*].href").asInstanceOf[JSONArray].get(0).asInstanceOf[String])
+      assertEquals(200, getRecipeResponse.getStatusCodeValue)
+      verifyRecipe(recipe, jsonPath.parse(getRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]])
 
-    val updateRecipe = JsonPath.read(responseJson, "$.actions[?(@.method == 'PATCH')].href")
-      .asInstanceOf[JSONArray].get(0).asInstanceOf[String]
-    val updatedRecipe = Recipe.create("Another test", "Another test recipe",
-      util.Arrays.asList(Ingredient.create("something else", QuantitySpecifier.Unspecified, 0.0)),
-      util.Arrays.asList(Instruction.create("Do something else")))
-    updatedRecipe.recipeId = recipeId.longValue
-    updatedRecipe.ingredients.get(0).ingredientId =
-      JsonPath.read(addRecipeJson, "$.ingredients[0].ingredientId").asInstanceOf[Integer].longValue
-    updatedRecipe.instructions.get(0).instructionId =
-      JsonPath.read(addRecipeJson, "$.instructions[0].instructionId").asInstanceOf[Integer].longValue
+      verifyUrlsMatch(getRecipe,
+        JsonPath.read(responseJson, "$.links[*].href").asInstanceOf[JSONArray].get(0).asInstanceOf[String])
 
-    val updateRecipeResponse =
-      restTemplate.exchange(RequestEntity.patch(updateRecipe).accept(MediaType.APPLICATION_JSON).body(updatedRecipe),
-        classOf[String])
-
-    assertEquals(200, updateRecipeResponse.getStatusCodeValue)
-
-    val updatedRecipeJson =
-      jsonPath.parse(updateRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
-
-    verifyRecipe(updatedRecipe, updatedRecipeJson)
-
-    val deleteRecipe =
-      JsonPath.read(responseJson, "$.actions[?(@.method == 'DELETE')].href")
+      val updateRecipe = JsonPath.read(responseJson, "$.actions[?(@.method == 'PATCH')].href")
         .asInstanceOf[JSONArray].get(0).asInstanceOf[String]
+      val updatedRecipe = Recipe.create("Another test", "Another test recipe",
+        util.Arrays.asList(Ingredient.create("something else", QuantitySpecifier.Unspecified, 0.0)),
+        util.Arrays.asList(Instruction.create("Do something else")))
+      updatedRecipe.recipeId = recipeId.longValue
+      updatedRecipe.ingredients.get(0).ingredientId =
+        JsonPath.read(addRecipeJson, "$.ingredients[0].ingredientId").asInstanceOf[Integer].longValue
+      updatedRecipe.instructions.get(0).instructionId =
+        JsonPath.read(addRecipeJson, "$.instructions[0].instructionId").asInstanceOf[Integer].longValue
 
-    val deleteRecipeResponse = restTemplate.exchange(RequestEntity.delete(deleteRecipe).build, classOf[String])
+      val updateRecipeResponse =
+        restTemplate.exchange(RequestEntity.patch(updateRecipe).accept(MediaType.APPLICATION_JSON).body(updatedRecipe),
+          classOf[String])
 
-    assertEquals(200, deleteRecipeResponse.getStatusCodeValue)
+      assertEquals(200, updateRecipeResponse.getStatusCodeValue)
+
+      val updatedRecipeJson =
+        jsonPath.parse(updateRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
+
+      verifyRecipe(updatedRecipe, updatedRecipeJson)
+
+      deleteRecipe =
+        JsonPath.read(responseJson, "$.actions[?(@.method == 'DELETE')].href")
+          .asInstanceOf[JSONArray].get(0).asInstanceOf[String]
+    } finally {
+      if (deleteRecipe != null) {
+        val deleteRecipeResponse = restTemplate.exchange(RequestEntity.delete(deleteRecipe).build, classOf[String])
+
+        assertEquals(200, deleteRecipeResponse.getStatusCodeValue)
+      }
+    }
 
     verifyListRecipesSize(0)
   }
 
   @Test
   def testGetRecipeWithoutHyperlinks(): Unit = {
-    verifyListRecipesSize(0)
+    var recipeId: Integer = null
 
-    val addRecipeResponse =
-      restTemplate.exchange(RequestEntity
-        .put(s"http://localhost:$port/recipes/add")
-        .accept(MediaType.APPLICATION_JSON)
-        .body(recipe), classOf[String])
+    try {
+      verifyListRecipesSize(0)
 
-    assertEquals(200, addRecipeResponse.getStatusCodeValue)
+      val addRecipeResponse =
+        restTemplate.exchange(RequestEntity
+          .put(s"http://localhost:$port/recipes/add")
+          .accept(MediaType.APPLICATION_JSON)
+          .body(recipe), classOf[String])
 
-    val addRecipeJson = jsonPath.parse(addRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
-    val recipeId = JsonPath.read(addRecipeJson, "$.recipeId").asInstanceOf[Integer]
+      assertEquals(200, addRecipeResponse.getStatusCodeValue)
 
-    val getRecipe = s"http://localhost:$port/recipes/get/$recipeId"
-    val getRecipeResponse = restTemplate.exchange(RequestEntity.get(getRecipe).build, classOf[String])
+      val addRecipeJson = jsonPath.parse(addRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
+      recipeId = JsonPath.read(addRecipeJson, "$.recipeId").asInstanceOf[Integer]
 
-    assertEquals(200, getRecipeResponse.getStatusCodeValue)
-    verifyRecipe(recipe, jsonPath.parse(getRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]])
+      val getRecipe = s"http://localhost:$port/recipes/get/$recipeId"
+      val getRecipeResponse = restTemplate.exchange(RequestEntity.get(getRecipe).build, classOf[String])
 
-    val response = recipeController.deleteRecipe(recipeId.longValue())
+      assertEquals(200, getRecipeResponse.getStatusCodeValue)
+      verifyRecipe(recipe, jsonPath.parse(getRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]])
+    } finally {
+      if (recipeId != null) {
+        val deleteRecipeResponse = recipeController.deleteRecipe(recipeId.longValue())
+
+        assertEquals(200, deleteRecipeResponse.getStatusCodeValue)
+      }
+    }
 
     verifyListRecipesSize(0)
   }
@@ -270,182 +299,205 @@ class RecipeServiceAppTest extends BaseAppTest {
 
   @Test
   def testGetRecipeWithHyperlinks(): Unit = {
-    verifyListRecipesSize(0)
+    var recipeId: Integer = null
 
-    val addRecipeResponse =
-      restTemplate.exchange(RequestEntity
-        .put(s"http://localhost:$port/recipes/add")
-        .accept(MediaType.APPLICATION_JSON)
-        .body(recipe), classOf[String])
+    try {
+      verifyListRecipesSize(0)
 
-    assertEquals(200, addRecipeResponse.getStatusCodeValue)
+      val addRecipeResponse =
+        restTemplate.exchange(RequestEntity
+          .put(s"http://localhost:$port/recipes/add")
+          .accept(MediaType.APPLICATION_JSON)
+          .body(recipe), classOf[String])
 
-    val addRecipeJson = jsonPath.parse(addRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
-    val recipeId = JsonPath.read(addRecipeJson, "$.recipeId").asInstanceOf[Integer]
+      assertEquals(200, addRecipeResponse.getStatusCodeValue)
 
-    val getRecipe = new URIBuilder(s"http://localhost:$port/recipes/get/$recipeId")
-      .addParameter(includeHyperLinksParam, "true").build.toString
-    val getRecipeResponse = restTemplate.exchange(RequestEntity.get(getRecipe).build, classOf[String])
-    val responseJson = jsonPath.parse(getRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
-    val getRecipeJson =
-      JsonPath.read(responseJson, "$.properties").asInstanceOf[util.LinkedHashMap[String, Object]]
+      val addRecipeJson = jsonPath.parse(addRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
+      recipeId = JsonPath.read(addRecipeJson, "$.recipeId").asInstanceOf[Integer]
 
-    assertEquals(200, getRecipeResponse.getStatusCodeValue)
-    verifyRecipe(recipe, getRecipeJson)
+      val getRecipe = new URIBuilder(s"http://localhost:$port/recipes/get/$recipeId")
+        .addParameter(includeHyperLinksParam, "true").build.toString
+      val getRecipeResponse = restTemplate.exchange(RequestEntity.get(getRecipe).build, classOf[String])
+      val responseJson = jsonPath.parse(getRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
+      val getRecipeJson =
+        JsonPath.read(responseJson, "$.properties").asInstanceOf[util.LinkedHashMap[String, Object]]
 
-    verifyUrlsMatch(getRecipe,
-      JsonPath.read(responseJson, "$.links[*].href").asInstanceOf[JSONArray].get(0).asInstanceOf[String])
+      assertEquals(200, getRecipeResponse.getStatusCodeValue)
+      verifyRecipe(recipe, getRecipeJson)
 
-    val updatedRecipe = Recipe.create("Another test", "Another test recipe",
-      util.Arrays.asList(Ingredient.create("something else", QuantitySpecifier.Unspecified, 0.0)),
-      util.Arrays.asList(Instruction.create("Do something else")))
-    updatedRecipe.recipeId = recipeId.longValue
-    updatedRecipe.ingredients.get(0).ingredientId =
-      JsonPath.read(getRecipeJson, "$.ingredients[0].ingredientId").asInstanceOf[Integer].longValue
-    updatedRecipe.instructions.get(0).instructionId =
-      JsonPath.read(getRecipeJson, "$.instructions[0].instructionId").asInstanceOf[Integer].longValue
+      verifyUrlsMatch(getRecipe,
+        JsonPath.read(responseJson, "$.links[*].href").asInstanceOf[JSONArray].get(0).asInstanceOf[String])
 
-    val updateRecipe = JsonPath.read(responseJson, "$.actions[?(@.method == 'PATCH')].href")
-      .asInstanceOf[JSONArray].get(0).asInstanceOf[String]
-    val updateRecipeResponse =
-      restTemplate.exchange(RequestEntity.patch(updateRecipe)
-        .accept(MediaType.APPLICATION_JSON)
-        .body(updatedRecipe), classOf[String])
+      val updatedRecipe = Recipe.create("Another test", "Another test recipe",
+        util.Arrays.asList(Ingredient.create("something else", QuantitySpecifier.Unspecified, 0.0)),
+        util.Arrays.asList(Instruction.create("Do something else")))
+      updatedRecipe.recipeId = recipeId.longValue
+      updatedRecipe.ingredients.get(0).ingredientId =
+        JsonPath.read(getRecipeJson, "$.ingredients[0].ingredientId").asInstanceOf[Integer].longValue
+      updatedRecipe.instructions.get(0).instructionId =
+        JsonPath.read(getRecipeJson, "$.instructions[0].instructionId").asInstanceOf[Integer].longValue
 
-    assertEquals(200, updateRecipeResponse.getStatusCodeValue)
+      val updateRecipe = JsonPath.read(responseJson, "$.actions[?(@.method == 'PATCH')].href")
+        .asInstanceOf[JSONArray].get(0).asInstanceOf[String]
+      val updateRecipeResponse =
+        restTemplate.exchange(RequestEntity.patch(updateRecipe)
+          .accept(MediaType.APPLICATION_JSON)
+          .body(updatedRecipe), classOf[String])
 
-    val updatedRecipeJson =
-      jsonPath.parse(updateRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
+      assertEquals(200, updateRecipeResponse.getStatusCodeValue)
 
-    verifyRecipe(updatedRecipe, updatedRecipeJson)
+      val updatedRecipeJson =
+        jsonPath.parse(updateRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
 
-    val response = recipeController.deleteRecipe(recipeId.longValue())
+      verifyRecipe(updatedRecipe, updatedRecipeJson)
+    } finally {
+      if (recipeId != null) {
+        val deleteRecipeResponse = recipeController.deleteRecipe(recipeId.longValue())
+
+        assertEquals(200, deleteRecipeResponse.getStatusCodeValue)
+      }
+    }
 
     verifyListRecipesSize(0)
   }
 
   @Test
   def testUpdateRecipeWithoutHyperlinks(): Unit = {
-    val updateRecipe = s"http://localhost:$port/recipes/update"
+    var recipeId: Integer = null
 
-    verifyListRecipesSize(0)
+    try {
+      val updateRecipe = s"http://localhost:$port/recipes/update"
 
-    val addRecipeResponse =
-      restTemplate.exchange(RequestEntity
-        .put(s"http://localhost:$port/recipes/add")
+      verifyListRecipesSize(0)
+
+      val addRecipeResponse =
+        restTemplate.exchange(RequestEntity
+          .put(s"http://localhost:$port/recipes/add")
+          .accept(MediaType.APPLICATION_JSON)
+          .body(recipe), classOf[String])
+
+      assertEquals(200, addRecipeResponse.getStatusCodeValue)
+
+      val addRecipeJson = jsonPath.parse(addRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
+      recipeId = JsonPath.read(addRecipeJson, "$.recipeId").asInstanceOf[Integer]
+
+      val updatedRecipe = Recipe.create("Another test", "Another test recipe",
+        util.Arrays.asList(Ingredient.create("something else", QuantitySpecifier.Unspecified, 0.0)),
+        util.Arrays.asList(Instruction.create("Do something else")))
+      updatedRecipe.recipeId = recipeId.longValue
+      updatedRecipe.ingredients.get(0).ingredientId =
+        JsonPath.read(addRecipeJson, "$.ingredients[0].ingredientId").asInstanceOf[Integer].longValue
+      updatedRecipe.instructions.get(0).instructionId =
+        JsonPath.read(addRecipeJson, "$.instructions[0].instructionId").asInstanceOf[Integer].longValue
+
+      val updateRecipeResponse = restTemplate.exchange(RequestEntity
+        .patch(updateRecipe)
         .accept(MediaType.APPLICATION_JSON)
-        .body(recipe), classOf[String])
+        .body(updatedRecipe), classOf[String])
 
-    assertEquals(200, addRecipeResponse.getStatusCodeValue)
+      assertEquals(200, updateRecipeResponse.getStatusCodeValue)
+      verifyRecipe(updatedRecipe,
+        jsonPath.parse(updateRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]])
 
-    val addRecipeJson = jsonPath.parse(addRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
-    val recipeId = JsonPath.read(addRecipeJson, "$.recipeId").asInstanceOf[Integer]
+      val getRecipe = s"http://localhost:$port/recipes/get/$recipeId"
+      val getRecipeResponse = restTemplate.exchange(RequestEntity.get(getRecipe).build, classOf[String])
 
-    val updatedRecipe = Recipe.create("Another test", "Another test recipe",
-      util.Arrays.asList(Ingredient.create("something else", QuantitySpecifier.Unspecified, 0.0)),
-      util.Arrays.asList(Instruction.create("Do something else")))
-    updatedRecipe.recipeId = recipeId.longValue
-    updatedRecipe.ingredients.get(0).ingredientId =
-      JsonPath.read(addRecipeJson, "$.ingredients[0].ingredientId").asInstanceOf[Integer].longValue
-    updatedRecipe.instructions.get(0).instructionId =
-      JsonPath.read(addRecipeJson, "$.instructions[0].instructionId").asInstanceOf[Integer].longValue
+      assertEquals(200, getRecipeResponse.getStatusCodeValue)
+      verifyRecipe(updatedRecipe,
+        jsonPath.parse(getRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]])
+    } finally {
+      if (recipeId != null) {
+        val deleteRecipeResponse = recipeController.deleteRecipe(recipeId.longValue())
 
-    val updateRecipeResponse = restTemplate.exchange(RequestEntity
-      .patch(updateRecipe)
-      .accept(MediaType.APPLICATION_JSON)
-      .body(updatedRecipe), classOf[String])
-
-    assertEquals(200, updateRecipeResponse.getStatusCodeValue)
-    verifyRecipe(updatedRecipe,
-      jsonPath.parse(updateRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]])
-
-    val getRecipe = s"http://localhost:$port/recipes/get/$recipeId"
-    val getRecipeResponse = restTemplate.exchange(RequestEntity.get(getRecipe).build, classOf[String])
-
-    assertEquals(200, getRecipeResponse.getStatusCodeValue)
-    verifyRecipe(updatedRecipe,
-      jsonPath.parse(getRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]])
-
-    val response = recipeController.deleteRecipe(recipeId.longValue())
+        assertEquals(200, deleteRecipeResponse.getStatusCodeValue)
+      }
+    }
 
     verifyListRecipesSize(0)
   }
 
   @Test
   def testUpdateRecipeWithHyperlinks(): Unit = {
-    val updateRecipe = new URIBuilder(s"http://localhost:$port/recipes/update")
-      .addParameter(includeHyperLinksParam, "true").build.toString
+    var deleteRecipe: String = null
 
-    verifyListRecipesSize(0)
+    try {
+      val updateRecipe = new URIBuilder(s"http://localhost:$port/recipes/update")
+        .addParameter(includeHyperLinksParam, "true").build.toString
 
-    val addRecipeResponse = restTemplate.exchange(RequestEntity
-      .put(s"http://localhost:$port/recipes/add")
-      .accept(MediaType.APPLICATION_JSON)
-      .body(recipe), classOf[String])
+      verifyListRecipesSize(0)
 
-    assertEquals(200, addRecipeResponse.getStatusCodeValue)
+      val addRecipeResponse = restTemplate.exchange(RequestEntity
+        .put(s"http://localhost:$port/recipes/add")
+        .accept(MediaType.APPLICATION_JSON)
+        .body(recipe), classOf[String])
 
-    val addRecipeJson = jsonPath.parse(addRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
-    val recipeId = JsonPath.read(addRecipeJson, "$.recipeId").asInstanceOf[Integer]
+      assertEquals(200, addRecipeResponse.getStatusCodeValue)
 
-    val updatedRecipe = Recipe.create("Another test", "Another test recipe",
-      util.Arrays.asList(Ingredient.create("something else", QuantitySpecifier.Unspecified, 0.0)),
-      util.Arrays.asList(Instruction.create("Do something else")))
-    updatedRecipe.recipeId = recipeId.longValue
-    updatedRecipe.ingredients.get(0).ingredientId =
-      JsonPath.read(addRecipeJson, "$.ingredients[0].ingredientId").asInstanceOf[Integer].longValue
-    updatedRecipe.instructions.get(0).instructionId =
-      JsonPath.read(addRecipeJson, "$.instructions[0].instructionId").asInstanceOf[Integer].longValue
+      val addRecipeJson = jsonPath.parse(addRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
+      val recipeId = JsonPath.read(addRecipeJson, "$.recipeId").asInstanceOf[Integer]
 
-    val updateRecipeResponse = restTemplate.exchange(RequestEntity
-      .patch(updateRecipe)
-      .accept(MediaType.APPLICATION_JSON)
-      .body(updatedRecipe), classOf[String])
+      val updatedRecipe = Recipe.create("Another test", "Another test recipe",
+        util.Arrays.asList(Ingredient.create("something else", QuantitySpecifier.Unspecified, 0.0)),
+        util.Arrays.asList(Instruction.create("Do something else")))
+      updatedRecipe.recipeId = recipeId.longValue
+      updatedRecipe.ingredients.get(0).ingredientId =
+        JsonPath.read(addRecipeJson, "$.ingredients[0].ingredientId").asInstanceOf[Integer].longValue
+      updatedRecipe.instructions.get(0).instructionId =
+        JsonPath.read(addRecipeJson, "$.instructions[0].instructionId").asInstanceOf[Integer].longValue
 
-    assertEquals(200, updateRecipeResponse.getStatusCodeValue)
+      val updateRecipeResponse = restTemplate.exchange(RequestEntity
+        .patch(updateRecipe)
+        .accept(MediaType.APPLICATION_JSON)
+        .body(updatedRecipe), classOf[String])
 
-    val responseJson = jsonPath.parse(updateRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
-    val updateRecipeJson =
-      JsonPath.read(responseJson, "$.properties").asInstanceOf[util.LinkedHashMap[String, Object]]
-    verifyRecipe(updatedRecipe, updateRecipeJson)
+      assertEquals(200, updateRecipeResponse.getStatusCodeValue)
 
-    val getRecipe = s"http://localhost:$port/recipes/get/$recipeId"
-    val getRecipeResponse = restTemplate.exchange(RequestEntity.get(getRecipe).build, classOf[String])
+      val responseJson = jsonPath.parse(updateRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
+      val updateRecipeJson =
+        JsonPath.read(responseJson, "$.properties").asInstanceOf[util.LinkedHashMap[String, Object]]
+      verifyRecipe(updatedRecipe, updateRecipeJson)
 
-    assertEquals(200, getRecipeResponse.getStatusCodeValue)
-    verifyRecipe(updatedRecipe,
-      jsonPath.parse(getRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]])
-    verifyUrlsMatch(getRecipe,
-      JsonPath.read(responseJson, "$.links[*].href").asInstanceOf[JSONArray].get(0).asInstanceOf[String])
+      val getRecipe = s"http://localhost:$port/recipes/get/$recipeId"
+      val getRecipeResponse = restTemplate.exchange(RequestEntity.get(getRecipe).build, classOf[String])
 
-    val updatedRecipe2 = Recipe.create("Yet another test", "Yet another test recipe",
-      util.Arrays.asList(Ingredient.create("something else again", QuantitySpecifier.Unspecified, 0.0)),
-      util.Arrays.asList(Instruction.create("Do something else again")))
-    updatedRecipe2.recipeId = recipeId.longValue
-    updatedRecipe2.ingredients.get(0).ingredientId =
-      JsonPath.read(updateRecipeJson, "$.ingredients[0].ingredientId").asInstanceOf[Integer].longValue
-    updatedRecipe2.instructions.get(0).instructionId =
-      JsonPath.read(updateRecipeJson, "$.instructions[0].instructionId").asInstanceOf[Integer].longValue
+      assertEquals(200, getRecipeResponse.getStatusCodeValue)
+      verifyRecipe(updatedRecipe,
+        jsonPath.parse(getRecipeResponse.getBody).asInstanceOf[util.LinkedHashMap[String, Object]])
+      verifyUrlsMatch(getRecipe,
+        JsonPath.read(responseJson, "$.links[*].href").asInstanceOf[JSONArray].get(0).asInstanceOf[String])
 
-    val updateRecipe2 =
-      JsonPath.read(responseJson, "$.actions[?(@.method == 'PATCH')].href")
+      val updatedRecipe2 = Recipe.create("Yet another test", "Yet another test recipe",
+        util.Arrays.asList(Ingredient.create("something else again", QuantitySpecifier.Unspecified, 0.0)),
+        util.Arrays.asList(Instruction.create("Do something else again")))
+      updatedRecipe2.recipeId = recipeId.longValue
+      updatedRecipe2.ingredients.get(0).ingredientId =
+        JsonPath.read(updateRecipeJson, "$.ingredients[0].ingredientId").asInstanceOf[Integer].longValue
+      updatedRecipe2.instructions.get(0).instructionId =
+        JsonPath.read(updateRecipeJson, "$.instructions[0].instructionId").asInstanceOf[Integer].longValue
+
+      val updateRecipe2 =
+        JsonPath.read(responseJson, "$.actions[?(@.method == 'PATCH')].href")
+          .asInstanceOf[JSONArray].get(0).asInstanceOf[String]
+      val updateRecipeResponse2 = restTemplate.exchange(RequestEntity
+        .patch(updateRecipe2)
+        .accept(MediaType.APPLICATION_JSON)
+        .body(updatedRecipe2), classOf[String])
+
+      assertEquals(200, updateRecipeResponse2.getStatusCodeValue)
+
+      val updatedRecipeJson2 =
+        jsonPath.parse(updateRecipeResponse2.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
+
+      verifyRecipe(updatedRecipe2, updatedRecipeJson2)
+      deleteRecipe = JsonPath.read(responseJson, "$.actions[?(@.method == 'DELETE')].href")
         .asInstanceOf[JSONArray].get(0).asInstanceOf[String]
-    val updateRecipeResponse2 = restTemplate.exchange(RequestEntity
-      .patch(updateRecipe2)
-      .accept(MediaType.APPLICATION_JSON)
-      .body(updatedRecipe2), classOf[String])
+    } finally {
+      if (deleteRecipe != null) {
+        val deleteRecipeResponse = restTemplate.exchange(RequestEntity.delete(deleteRecipe).build, classOf[String])
 
-    assertEquals(200, updateRecipeResponse2.getStatusCodeValue)
-
-    val updatedRecipeJson2 =
-      jsonPath.parse(updateRecipeResponse2.getBody).asInstanceOf[util.LinkedHashMap[String, Object]]
-
-    verifyRecipe(updatedRecipe2, updatedRecipeJson2)
-
-    val deleteRecipe = JsonPath.read(responseJson, "$.actions[?(@.method == 'DELETE')].href")
-      .asInstanceOf[JSONArray].get(0).asInstanceOf[String]
-    val deleteRecipeResponse = restTemplate.exchange(RequestEntity.delete(deleteRecipe).build, classOf[String])
-
+        assertEquals(200, deleteRecipeResponse.getStatusCodeValue)
+      }
+    }
     verifyListRecipesSize(0)
   }
 
@@ -468,11 +520,15 @@ class RecipeServiceAppTest extends BaseAppTest {
 
     assertEquals(200, listRecipesWithHyperLinksResponse.getStatusCodeValue)
     val listRecipesWithHyperLinksJson = jsonPath.parse(listRecipesWithHyperLinksResponse.getBody)
-    assertEquals(expectedNumberOfElements, JsonPath.read(listRecipesWithHyperLinksJson,
-      "$.properties.totalElements").asInstanceOf[Integer])
-    if (expectedNumberOfElements > 0)
+    if (expectedNumberOfElements > 0) {
+      assertEquals(expectedNumberOfElements, JsonPath.read(listRecipesWithHyperLinksJson,
+        "$.properties.totalElements").asInstanceOf[Integer])
       assertEquals(expectedNumberOfElements,
         JsonPath.read(listRecipesWithHyperLinksJson,"$.entities").asInstanceOf[JSONArray].size)
+    } else {
+      assertEquals(expectedNumberOfElements, JsonPath.read(listRecipesWithHyperLinksJson,
+        "$.properties.totalElements").asInstanceOf[Integer])
+    }
   }
 
   private def verifyUrlsMatch(urlStr1: String, urlStr2: String): Unit = {
@@ -525,7 +581,6 @@ class RecipeServiceAppTest extends BaseAppTest {
   @throws[URISyntaxException]
   private def writeConfigurationYmlFile(configurationMapping: util.Map[String, _]): Unit = {
     val resource = getClass.getResource("/application-test.yml.ftl")
-//    val file = scala.io.Source.fromFile("src/main/resources/application-test.yml.ftl")
     val source = scala.io.Source.fromFile(resource.getPath)
     val templateString = try source.mkString finally source.close()
     val substitutor = new StringSubstitutor(configurationMapping)

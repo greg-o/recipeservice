@@ -2,7 +2,7 @@
 // Created by: Greg Osgood
 // Copyright: none
 
-package org.grego.recipeservice.services
+package org.grego.recipeservice.service
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient
 import co.elastic.clients.elasticsearch._types.query_dsl.{MatchQuery, Query, QueryStringQuery}

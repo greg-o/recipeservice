@@ -17,7 +17,7 @@ import io.swagger.v3.oas.annotations.{OpenAPIDefinition, Operation}
 import org.grego.recipeservice.document.RecipeDoc
 import org.grego.recipeservice.model.Recipe
 import org.grego.recipeservice.repository.RecipeRepository
-import org.grego.recipeservice.services.IRecipeService
+import org.grego.recipeservice.service.IRecipeService
 import org.springframework.beans.factory.annotation.{Autowired, Value}
 import org.springframework.data.domain.Page
 import org.springframework.hateoas.{EntityModel, PagedModel}
@@ -97,18 +97,27 @@ class RecipeController {
   ): ResponseEntity[?] = {
     val pageNumber = Integer.parseInt(page.orElse("0"))
     val pageSize = Integer.parseInt(size.orElse(defaultPageSize))
-    val recipesPage = recipeService.getAllRecipes(pageNumber, pageSize)
 
-    if (includeHyperLinks) {
+    if (pageNumber < 0)  {
       ResponseEntity
-        .ok
-        .contentType(de.ingogriebsch.spring.hateoas.siren.MediaTypes.SIREN_JSON)
-        .body(addHyperLinks(pageNumber, pageSize, recipesPage))
-    } else {
-      ResponseEntity
-        .ok
-        .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
-        .body(recipesPage.getContent)
+        .badRequest
+        .contentType(MediaType.TEXT_PLAIN)
+        .body(String.format("Pages begin at 0:  page-number = %d", pageNumber))
+    } else
+    {
+      val recipesPage = recipeService.getAllRecipes(pageNumber, pageSize)
+
+      if (includeHyperLinks) {
+        ResponseEntity
+          .ok
+          .contentType(de.ingogriebsch.spring.hateoas.siren.MediaTypes.SIREN_JSON)
+          .body(addHyperLinks(pageNumber, pageSize, recipesPage))
+      } else {
+        ResponseEntity
+          .ok
+          .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+          .body(recipesPage.getContent)
+      }
     }
   }
 

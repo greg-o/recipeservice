@@ -18,6 +18,7 @@
         <scala.version>3.0.2</scala.version>
         <maven.compiler.source>18</maven.compiler.source>
         <maven.compiler.target>18</maven.compiler.target>
+        <java.version>18</java.version>
         <!-- Versions of included libraries -->
         <checkstyle.config.location>${project.basedir}/checkstyle_config.xml</checkstyle.config.location>
         <bean-matchers.version>0.14</bean-matchers.version>
@@ -417,6 +418,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <wait>1000</wait>
+                    <maxAttempts>30</maxAttempts>
+                </configuration>
                 <executions>
                     <execution>
                         <id>pre-integration-test</id>

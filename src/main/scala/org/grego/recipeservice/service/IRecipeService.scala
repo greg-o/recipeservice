@@ -2,7 +2,7 @@
 // Created by: Greg Osgood
 // Copyright: none
 
-package org.grego.recipeservice.services
+package org.grego.recipeservice.service
 
 import co.elastic.clients.elasticsearch.core.search.ResponseBody
 import org.grego.recipeservice.document.RecipeDoc

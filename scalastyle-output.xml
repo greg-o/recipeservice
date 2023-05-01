@@ -3,52 +3,79 @@
  <file name="/Users/gregoryosgood/Documents/Projects/spring-boot-scala-recipe-service/src/main/scala/org/grego/recipeservice/model/Recipe.scala">
   <error line="14" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
  </file>
+ <file name="/Users/gregoryosgood/Documents/Projects/spring-boot-scala-recipe-service/src/test/scala/org/grego/recipeservice/controller/RecipeControllerTest.scala">
+  <error line="532" source="org.scalastyle.file.FileLineLengthChecker" severity="warning" message="File line length exceeds 160 characters"/>
+ </file>
  <file name="/Users/gregoryosgood/Documents/Projects/spring-boot-scala-recipe-service/src/test/scala/org/grego/recipeservice/RecipeServiceAppTest.scala">
   <error column="59" line="62" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
   <error column="64" line="85" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="133" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="155" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="169" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="190" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="205" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="226" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="239" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="254" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="262" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="281" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="293" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="315" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="339" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="358" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="365" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="386" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="405" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="415" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="438" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="459" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="17" line="469" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
-  <error column="18" line="559" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
-  <error column="4" line="473" source="org.scalastyle.scalariform.IfBraceChecker" severity="warning" message="If block needs braces"/>
-  <error column="6" line="178" source="org.scalastyle.scalariform.MethodLengthChecker" severity="warning" message="Method is longer than 50 lines"/>
-  <error column="6" line="272" source="org.scalastyle.scalariform.MethodLengthChecker" severity="warning" message="Method is longer than 50 lines"/>
-  <error column="6" line="375" source="org.scalastyle.scalariform.MethodLengthChecker" severity="warning" message="Method is longer than 50 lines"/>
+  <error column="19" line="136" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="21" line="146" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="165" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="179" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="21" line="185" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="208" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="223" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="244" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="21" line="258" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="278" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="286" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="21" line="292" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="313" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="325" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="347" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="21" line="357" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="379" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="398" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="405" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="21" line="412" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="434" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="453" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="463" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="19" line="486" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="21" line="498" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="511" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="17" line="521" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="28" line="114" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="28" line="154" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="31" line="194" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="28" line="267" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="28" line="302" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="28" line="366" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="31" line="421" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="18" line="614" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"/>
+  <error column="6" line="193" source="org.scalastyle.scalariform.MethodLengthChecker" severity="warning" message="Method is longer than 50 lines"/>
+  <error column="6" line="301" source="org.scalastyle.scalariform.MethodLengthChecker" severity="warning" message="Method is longer than 50 lines"/>
+  <error column="6" line="365" source="org.scalastyle.scalariform.MethodLengthChecker" severity="warning" message="Method is longer than 50 lines"/>
+  <error column="6" line="420" source="org.scalastyle.scalariform.MethodLengthChecker" severity="warning" message="Method is longer than 50 lines"/>
   <error column="94" line="80" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot; appears 7 times in the file."/>
-  <error column="6" line="126" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.links[*].href&quot; appears 4 times in the file."/>
-  <error column="48" line="137" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.recipeId&quot; appears 7 times in the file."/>
-  <error column="44" line="147" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal /recipes/add&quot; appears 6 times in the file."/>
-  <error column="44" line="180" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;true&quot; appears 4 times in the file."/>
-  <error column="52" line="193" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.properties&quot; appears 3 times in the file."/>
-  <error column="51" line="211" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.actions[?(@.method == 'PATCH')].href&quot; appears 3 times in the file."/>
-  <error column="38" line="213" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;Another test&quot; appears 4 times in the file."/>
-  <error column="54" line="213" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;Another test recipe&quot; appears 4 times in the file."/>
-  <error column="43" line="214" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;something else&quot; appears 4 times in the file."/>
-  <error column="44" line="215" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;Do something else&quot; appears 4 times in the file."/>
-  <error column="35" line="218" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.ingredients[0].ingredientId&quot; appears 5 times in the file."/>
-  <error column="35" line="220" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.instructions[0].instructionId&quot; appears 5 times in the file."/>
-  <error column="8" line="497" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
-  <error column="8" line="509" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
-  <error column="8" line="518" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
-  <error column="8" line="562" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
-  <error column="24" line="559" source="org.scalastyle.scalariform.SpaceAfterCommentStartChecker" severity="warning" message="Insert a space after the start of the comment"/>
+  <error column="8" line="129" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.links[*].href&quot; appears 4 times in the file."/>
+  <error column="46" line="140" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.recipeId&quot; appears 7 times in the file."/>
+  <error column="46" line="157" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal /recipes/add&quot; appears 6 times in the file."/>
+  <error column="46" line="198" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;true&quot; appears 4 times in the file."/>
+  <error column="54" line="211" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.properties&quot; appears 3 times in the file."/>
+  <error column="53" line="229" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.actions[?(@.method == 'PATCH')].href&quot; appears 3 times in the file."/>
+  <error column="40" line="231" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;Another test&quot; appears 4 times in the file."/>
+  <error column="56" line="231" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;Another test recipe&quot; appears 4 times in the file."/>
+  <error column="45" line="232" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;something else&quot; appears 4 times in the file."/>
+  <error column="46" line="233" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;Do something else&quot; appears 4 times in the file."/>
+  <error column="37" line="236" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.ingredients[0].ingredientId&quot; appears 5 times in the file."/>
+  <error column="37" line="238" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;$.instructions[0].instructionId&quot; appears 5 times in the file."/>
+  <error column="8" line="553" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
+  <error column="8" line="565" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
+  <error column="8" line="574" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
+  <error column="8" line="617" source="org.scalastyle.scalariform.ForBraceChecker" severity="warning" message="Use braces in for comprehensions"/>
+  <error column="24" line="614" source="org.scalastyle.scalariform.SpaceAfterCommentStartChecker" severity="warning" message="Insert a space after the start of the comment"/>
+ </file>
+ <file name="/Users/gregoryosgood/Documents/Projects/spring-boot-scala-recipe-service/src/test/scala/org/grego/recipeservice/model/RecipeTest.scala">
+  <error column="58" line="42" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error column="65" line="44" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+ </file>
+ <file name="/Users/gregoryosgood/Documents/Projects/spring-boot-scala-recipe-service/src/test/scala/org/grego/recipeservice/model/IngredientTest.scala">
+  <error column="64" line="35" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+ </file>
+ <file name="/Users/gregoryosgood/Documents/Projects/spring-boot-scala-recipe-service/src/test/scala/org/grego/recipeservice/service/RecipeServiceTest.scala">
+  <error column="57" line="160" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"/>
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="warning" message="File must end with newline character"/>
  </file>
 </checkstyle>
